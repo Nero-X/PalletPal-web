@@ -1,0 +1,31 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h4>Rijsat.com | Upload Single or Multiple files</h4>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<form enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <input type="file" asp-for="FormFile" />
+        <input asp-for="ColorsCount" />
+        <input asp-for="Sensitivity" />
+        <input type="submit" class="btn btn-primary" />
+    </div>
+</form>
+
+@{
+    if (ViewData["ColorsList"] is List<string> colorsList)
+    {
+        <ul>
+            @foreach (string color in colorsList)
+            {
+                <li>@color</li>
+            }
+        </ul>
+    }
+}
