@@ -9,20 +9,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace PalettePal_web.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private string fullPath = System.AppDomain.CurrentDomain.BaseDirectory.ToString() + "UploadImages";
         public IndexModel(ILogger<IndexModel> logger, IImageAnalyzer imageAnalyzer)
         {
             _logger = logger;
             ImageAnalyzer = imageAnalyzer;
         }
 
-        IImageAnalyzer ImageAnalyzer;
+        readonly IImageAnalyzer ImageAnalyzer;
 
         [BindProperty]
         public IFormFile FormFile { get; set; }
@@ -40,11 +40,22 @@ namespace PalettePal_web.Pages
 
         public void OnPost()
         {
-            var colors = ImageAnalyzer.GetColors(FormFile.OpenReadStream(), Sensitivity);
+            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/cat.jpg");
+            
+            var sw = new Stopwatch();
+            sw.Start();
+            var colors = ImageAnalyzer.GetColors(image, Sensitivity);
+            sw.Stop();
 
-            // Process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-            ViewData["ColorsList"] = colors.Select(x => x.ToString()).ToList();
+            ViewData["ColorsList"] = colors.Select(x => x.Name[2..]).Take(ColorsCount).ToList();
+            ViewData["Time"] = sw.ElapsedMilliseconds;
+        }
+
+        public ActionResult OnAjax()
+        {
+            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/cat.jpg");
+            var colors = ImageAnalyzer.GetColors(image, Sensitivity);
+            return new JsonResult(new { colorsList = colors.Select(x => x.Name[2..]).Take(ColorsCount).ToList() });
         }
     }
 }

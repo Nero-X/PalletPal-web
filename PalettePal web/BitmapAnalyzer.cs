@@ -47,9 +47,9 @@ namespace PalettePal_web
             public void IncCount() => count++; // инкрементировать счётчик вхождений в группу
         }
 
-        Color[] FindGroups(Bitmap bmp, int sensivityPercent) // функция группировки цветов
+        static Color[] FindGroups(Bitmap bmp, int sensivityPercent) // функция группировки цветов
         {
-            List<Group> all = new List<Group>(); // список всех цветовых групп 
+            List<Group> all = new(); // список всех цветовых групп 
             float sensivity = (float)(sensivityPercent * 0.05); // чувствительность
             for (int y = 0; y < bmp.Height; y++) // для каждого цвета проверяется, можно ли отнести его к уже существующей группе
                 for (int x = 0; x < bmp.Width; x++) // если нет - создаётся новая группа
@@ -68,7 +68,7 @@ namespace PalettePal_web
             return all.OrderByDescending(x => x.count).Select(x => x.color).ToArray(); // возврат всех групп в порядке убывания кол-ва вхождений пикселей
         }
 
-        void InsertionSort(PixelHue[] smpl) // сортировка вставками
+        static void InsertionSort(PixelHue[] smpl) // сортировка вставками
         {
             for (int i = 1; i < smpl.Length; i++)
             {
@@ -83,7 +83,7 @@ namespace PalettePal_web
             }
         }
 
-        Bitmap Compress(Bitmap bitmap)
+        static Bitmap Compress(Bitmap bitmap)
         {
             while (bitmap.Height / 2 > 80 && bitmap.Width / 2 > 80)                     
             {                                                                       
@@ -95,6 +95,7 @@ namespace PalettePal_web
         public Color[] GetColors(Stream image, int sensitivityPercent)
         {
             var bmp = Compress(new Bitmap(image)); // сохранение сжатого изображение в Bitmap
+            //return FindGroups(bmp, sensitivityPercent);
             var arr = new PixelHue[bmp.Width * bmp.Height]; // заполнение массива структур Пиксель-Насыщенность
             for (int y = 0; y < bmp.Height; y++)
                 for (int x = 0; x < bmp.Width; x++)

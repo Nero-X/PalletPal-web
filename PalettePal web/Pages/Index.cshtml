@@ -5,27 +5,92 @@
 }
 
 <div class="text-center">
-    <h4>Rijsat.com | Upload Single or Multiple files</h4>
+    <h4>Upload files</h4>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
 <form enctype="multipart/form-data" method="post">
-    <div class="form-group">
-        <input type="file" asp-for="FormFile" />
-        <input asp-for="ColorsCount" />
-        <input asp-for="Sensitivity" />
-        <input type="submit" class="btn btn-primary" />
-    </div>
+    <table>
+        <tr>
+            <td>
+                <label>
+                    <img id="form-image" src="~/cat.jpg" height="500" />
+                    <input asp-for="FormFile" type="file" onchange="previewFile()" hidden />
+                </label>
+            </td>
+            <td>
+
+                <div>
+                    <label>
+                        Количество цветов
+                        <input asp-for="ColorsCount" type="range" min="3" max="10" />
+                    </label>
+                    <label>
+                        Чувствительность
+                        <input asp-for="Sensitivity" type="range" min="5" max="95" />
+                    </label>
+                    <input type="submit" class="btn btn-primary" />
+                </div>
+            </td>
+        </tr>
+    </table>
 </form>
 
-@{
-    if (ViewData["ColorsList"] is List<string> colorsList)
-    {
-        <ul>
+<p>Elapsed: @ViewData["Time"] ms</p>
+
+<div class="colors-container">
+    @{
+        if (ViewData["ColorsList"] is List<string> colorsList)
+        {
+
             @foreach (string color in colorsList)
             {
-                <li>@color</li>
+                <div class="color" style="background-color: #@color">
+                    <a>@color</a>
+                </div>
             }
-        </ul>
+
+        }
     }
+</div>
+
+@section Scripts {
+    <script>
+        $("form").submit(async function (event) {
+            event.preventDefault();
+            // test image size
+            let colorsContainer = $(".colors-container").first();
+            colorsContainer.empty();
+            let response = await fetch(this.action, {
+                method: "ajax",
+                body: new FormData(this)
+            });
+            let result = await response.json();
+            for (let color of result.colorsList) {
+                colorsContainer.append(`<div class="color" style="background-color: #${color}"><a>${color}</a></div>`);
+            }
+        });
+
+        function sendForm(event) {
+            let form = $("form")[0];
+            let maxFileSize = 5242880;
+            let Data = new FormData();
+            const file = document.querySelector('input[type=file]').files[0];
+            if ((file.size <= maxFileSize) && ((file.type == 'image/png') || (file.type == 'image/jpeg'))) {
+                Data.append("FormFile", file);
+            };
+        };
+
+        function previewFile() {
+            const preview = document.querySelector('img');
+            const file = document.querySelector('input[type=file]').files[0];
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                preview.src = reader.result;
+            }
+
+            if (file) reader.readAsDataURL(file);
+        }
+    </script>
 }
