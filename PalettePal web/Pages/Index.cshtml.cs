@@ -30,32 +30,18 @@ namespace PalettePal_web.Pages
         [BindProperty]
         public int ColorsCount { get; set; }
 
-        [BindProperty]
-        public int Sensitivity { get; set; }
-
-        public void OnGet()
-        {
-            ViewData["SuccessMessage"] = "";
-        }
-
-        public void OnPost()
-        {
-            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/cat.jpg");
-            
-            var sw = new Stopwatch();
-            sw.Start();
-            var colors = ImageAnalyzer.GetColors(image, Sensitivity);
-            sw.Stop();
-
-            ViewData["ColorsList"] = colors.Select(x => x.Name[2..]).Take(ColorsCount).ToList();
-            ViewData["Time"] = sw.ElapsedMilliseconds;
-        }
-
         public ActionResult OnAjax()
         {
-            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/cat.jpg");
-            var colors = ImageAnalyzer.GetColors(image, Sensitivity);
-            return new JsonResult(new { colorsList = colors.Select(x => x.Name[2..]).Take(ColorsCount).ToList() });
+            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/default.jpg");
+            var sw = new Stopwatch();
+            sw.Start();
+            var colors = ImageAnalyzer.GetColors(image);
+            sw.Stop();
+            return new JsonResult(new
+            {
+                colorsList = colors.Select(x => x.Name[2..]).ToList(),
+                time = sw.ElapsedMilliseconds
+            });
         }
     }
 }
