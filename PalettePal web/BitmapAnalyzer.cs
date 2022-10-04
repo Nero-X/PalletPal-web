@@ -33,7 +33,7 @@ namespace PalettePal_web
             // find best number of clusters
             double bestScore = -1;
             int bestClusters = 0;
-            for (int numClusters = 3; numClusters < 10; numClusters++)
+            for (int numClusters = 5; numClusters < 10; numClusters++)
             {
                 var testClusters = Clustering.KMeans(RGBarray, numClusters);
                 var score = Clustering.CalculateSilhouetteScore(RGBarray, testClusters, numClusters);

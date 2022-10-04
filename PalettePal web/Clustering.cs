@@ -218,6 +218,7 @@ namespace PalettePal_web
 
         public static double[][] FindCentroids(double[][] rawData, int[] labels, int numClusters, int[] hist)
         {
+            // average all points
             double[][] centroids = new double[numClusters][];
             for (int cluster = 0; cluster < numClusters; cluster++)
             {
