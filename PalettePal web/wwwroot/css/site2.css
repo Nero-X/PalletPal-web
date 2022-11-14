@@ -66,7 +66,7 @@ header {
     background: #AD2BFF;
     border-radius: 10px;
     border-width: 0px;
-    margin: 11px 0px;
+    margin-top: 10px;;
     font-size: 24px;
     line-height: 25px;
     color: #FFFFFF;
@@ -104,7 +104,7 @@ header {
 
 .palette {
     position: relative;
-    margin: 50px 10%;
+    margin: 50px 10% 0px 10%;
 }
 
 /*фон палитры*/
@@ -133,5 +133,34 @@ header {
 }
 
 .colors-list {
+    list-style-type: none;
+    display: flex;
+    margin: 0px;
+    margin-top: 30px;
+    padding: 0px;
+    flex-direction: row;
+    gap: 15px;
+    flex-wrap: wrap;
+}
 
+.colors-list li {
+    width: 148px;
+    height: 53px;
+    text-align: center;
+    line-height: 53px;
+    border-radius: 10px;
+    background: #9F5146;
+    font-size: 16px;
+    
+}
+
+footer {
+    padding: 80px 0px;
+    text-align: center;
+    mix-blend-mode: overlay;
+    font-size: 16px;
+}
+
+footer a {
+    color: #FFFFFF;
 }
