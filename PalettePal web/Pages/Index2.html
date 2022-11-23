@@ -2,7 +2,7 @@
 <html lang="ru">
     <head>
         <title>Определение цвета по фото</title>
-        <link rel="stylesheet" type="text/css" href="\wwwroot\css\site2.css" />
+        <link rel="stylesheet" type="text/css" href="\wwwroot\css\site.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
@@ -14,22 +14,25 @@
         </header>
 
         <div class="instruction">
-            <ol>
-                <li>
-                    Фото перетащи на страницу или открой по кнопке
-                    <input type="button" value="Открыть фото">
-                </li>
-                <li>
-                    Выберите количество необходимых цветов
-                    <select name="ColorsCount">
-                        <option>Авто</option>
-                    </select>
-                </li>
-                <li>
-                    Нажмите на кнопку и сформируйте палитру цветов
-                    <input type="submit" value="Определить цвета">
-                </li>
-            </ol>
+            <form enctype="multipart/form-data">
+                <ol>
+                    <li>
+                        Фото перетащи на страницу или открой по кнопке
+                        <input id="open-btn" type="button" value="Открыть фото">
+                        <input id="file-input" type="file" name="FormFile" onchange="previewFile()"/>
+                    </li>
+                    <li>
+                        Выберите количество необходимых цветов
+                        <select name="ColorsCount">
+                            <option>Авто</option>
+                        </select>
+                    </li>
+                    <li>
+                        Нажмите на кнопку и сформируйте палитру цветов
+                        <input type="submit" value="Определить цвета">
+                    </li>
+                </ol>
+            </form>
         </div>
 
         <div class="image">
@@ -55,5 +58,9 @@
             Разработано <a href="https://vk.com/id139679525">Александр Богачёв</a><br>
             Дизайн <a href="https://www.instagram.com/ka_zonova">ka_zonova</a>
         </footer>
+
+        <div class="background"></div>
+
+        <script src="~/js/site.js"></script>
     </body>
 </html>
