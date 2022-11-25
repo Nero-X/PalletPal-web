@@ -16,7 +16,7 @@ namespace PalettePal_web
             return new Bitmap(bitmap, new Size(newWidth, newHeight));
         }
 
-        public Color[] GetColors(Stream image)
+        public Color[] GetColors(Stream image, int colorsCount)
         {
             var bmp = Compress(new Bitmap(image), 100);
             var RGBarray = BitmapToRGBArray(bmp);
@@ -30,32 +30,35 @@ namespace PalettePal_web
                 }
             }
 
-            // find best number of clusters
-            double bestScore = -1;
-            int bestClusters = 0;
-            for (int numClusters = 5; numClusters < 10; numClusters++)
+            if (colorsCount == 0)
             {
-                var testClusters = Clustering.KMeans(RGBarray, numClusters);
-                var score = Clustering.CalculateSilhouetteScore(RGBarray, testClusters, numClusters);
-                if (score > bestScore)
-                { 
-                    bestScore = score;
-                    bestClusters = numClusters;
+                // find best number of clusters
+                double bestScore = -1;
+                for (int numClusters = 3; numClusters < 10; numClusters++)
+                {
+                    var testClusters = Clustering.KMeans(RGBarray, numClusters);
+                    var score = Clustering.CalculateSilhouetteScore(RGBarray, testClusters, numClusters);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        colorsCount = numClusters;
+                    }
                 }
             }
-            var labels = Clustering.KMeans(RGBarray, bestClusters);
+
+            var labels = Clustering.KMeans(RGBarray, colorsCount);
 
             // find how many pixels are in each cluster
             var hist = Clustering.Histogram(labels);
 
             // get colors from clusters
-            var centroids = Clustering.FindCentroids(RGBarray, labels, bestClusters, hist);
+            var centroids = Clustering.FindCentroids(RGBarray, labels, colorsCount, hist);
 
             // sort clusters by histogram
             centroids = centroids.Zip(hist).OrderByDescending(x => x.Second).Select(x => x.First).ToArray();
 
-            var colors = new Color[bestClusters];
-            for (int cluster = 0; cluster < bestClusters; cluster++)
+            var colors = new Color[colorsCount];
+            for (int cluster = 0; cluster < colorsCount; cluster++)
             {
                 // denormalize
                 colors[cluster] = Color.FromArgb(255, (int)(centroids[cluster][0] * 255), (int)(centroids[cluster][1] * 255), (int)(centroids[cluster][2] * 255));

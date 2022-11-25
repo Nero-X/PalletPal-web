@@ -1,69 +1,46 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Определение основных цветов изображения";
 }
 
-<div class="text-center">
-    
+<header>
+    <span>Определите основные цвета изображения</span>
+</header>
+
+<div class="instruction">
+    <form enctype="multipart/form-data" method="post">
+        <ol>
+            <li>
+                Фото перетащи на страницу или открой по кнопке
+                <input id="open-btn" type="button" value="Открыть фото">
+                <input id="file-input" type="file" name="FormFile"/>
+            </li>
+            <li>
+                Выберите количество необходимых цветов
+                <select name="ColorsCount">
+                    <option value="0">Авто</option>
+                    <option>3</option>
+                    <option>6</option>
+                    <option>9</option>
+                </select>
+            </li>
+            <li>
+                Нажмите на кнопку и сформируйте палитру цветов
+                <input type="submit" value="Определить цвета">
+            </li>
+        </ol>
+    </form>
 </div>
 
-<form enctype="multipart/form-data" method="post">
-    <table>
-        <tr>
-            <td>
-                <label>
-                    <img id="form-image" src="~/default.png" height="500" />
-                    <input asp-for="FormFile" type="file" onchange="previewFile()" hidden />
-                </label>
-            </td>
-            <td>
+<div class="image">
+    <img id="form-image" src="~/default.png"/>
+</div>
 
-                <div>
-                    <label>
-                        Количество цветов
-                        <input asp-for="ColorsCount" type="range" min="3" max="10" />
-                    </label>
-                    <input type="submit" class="btn btn-primary" />
-                </div>
-            </td>
-        </tr>
-    </table>
-</form>
-
-<div class="colors-container"></div>
-
-<p>Elapsed: <span id="elapsed"></span> ms</p>
-
-@section Scripts {
-    <script>
-        let colorsContainer = $(".colors-container").first();
-
-        $("form").submit(async function (event) {
-            event.preventDefault();
-            // TODO: test image size
-            colorsContainer.empty();
-            let response = await fetch(this.action, {
-                method: "ajax",
-                body: new FormData(this)
-            });
-            let result = await response.json();
-            for (let color of result.colorsList) {
-                colorsContainer.append(`<div class="color" style="background-color: #${color}"><a>#${color}</a></div>`);
-            };
-            $("#elapsed").text(result.time);
-        });
-
-        function previewFile() {
-            const preview = document.querySelector('img');
-            const file = document.querySelector('input[type=file]').files[0];
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                preview.src = reader.result;
-            }
-
-            if (file) reader.readAsDataURL(file);
-        }
-    </script>
-}
+<div class="palette">
+    <div class="palette-content">
+        <h1>Палитра</h1>
+        Нажмите, чтобы скопировать цвет
+        <ol class="colors-list"></ol>
+    </div>
+</div>

@@ -24,18 +24,12 @@ namespace PalettePal_web.Pages
 
         readonly IImageAnalyzer ImageAnalyzer;
 
-        [BindProperty]
-        public IFormFile FormFile { get; set; }
-
-        [BindProperty]
-        public int ColorsCount { get; set; }
-
-        public ActionResult OnAjax()
+        public ActionResult OnAjax(IFormFile formFile, int colorsCount)
         {
-            var image = FormFile?.OpenReadStream() ?? System.IO.File.OpenRead("wwwroot/default.jpg");
+            var image = formFile.OpenReadStream();
             var sw = new Stopwatch();
             sw.Start();
-            var colors = ImageAnalyzer.GetColors(image);
+            var colors = ImageAnalyzer.GetColors(image, colorsCount);
             sw.Stop();
             return new JsonResult(new
             {
