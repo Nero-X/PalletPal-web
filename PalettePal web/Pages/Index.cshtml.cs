@@ -13,6 +13,7 @@ using System.Diagnostics;
 
 namespace PalettePal_web.Pages
 {
+    [IgnoreAntiforgeryToken]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -33,7 +34,7 @@ namespace PalettePal_web.Pages
             sw.Stop();
             return new JsonResult(new
             {
-                colorsList = colors.Select(x => x.Name[2..]).ToList(),
+                colorsList = colors.Select(x => "#" + x.Name[2..]).ToList(),
                 time = sw.ElapsedMilliseconds
             });
         }

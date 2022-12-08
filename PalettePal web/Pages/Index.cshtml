@@ -14,10 +14,10 @@
             <li>
                 Фото перетащи на страницу или открой по кнопке
                 <input id="open-btn" type="button" value="Открыть фото">
-                <input id="file-input" type="file" name="FormFile"/>
+                <input id="file-input" type="file" name="FormFile" accept=".jpg, .jpeg, .png"/>
             </li>
             <li>
-                Выберите количество необходимых цветов
+                Выбери количество необходимых цветов
                 <select name="ColorsCount">
                     <option value="0">Авто</option>
                     <option>3</option>
@@ -26,7 +26,7 @@
                 </select>
             </li>
             <li>
-                Нажмите на кнопку и сформируйте палитру цветов
+                Нажми на кнопку и получи палитру цветов
                 <input type="submit" value="Определить цвета">
             </li>
         </ol>
@@ -40,7 +40,9 @@
 <div class="palette">
     <div class="palette-content">
         <h1>Палитра</h1>
-        Нажмите, чтобы скопировать цвет
+        Нажми, чтобы скопировать цвет
         <ol class="colors-list"></ol>
     </div>
 </div>
+
+<div id="blackout"></div>
