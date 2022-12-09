@@ -144,6 +144,7 @@ header {
 .palette {
     position: relative;
     margin: 50px 10% 0px 10%;
+    display: none;
 }
 
 /*фон палитры*/
@@ -337,40 +338,6 @@ footer a {
     animation: fade-in-1 ease-in-out 1, fade-in-2 ease-in-out infinite alternate;
 }
 
-
-.loading {
-    display:flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: flex-start;
-    align-items: center;
-}
-
-.center {
-    margin: 0 auto;
-}
-  
-.outer-ring {
-    position: relative;
-    height: 200px;
-    width: 200px;
-    background-image: linear-gradient(135deg, #FEED07 0%, #FE6A50 5%, #ED00AA 15%, #2FE3FE 50%, #8900FF 100%);
-    border-radius: 50%;
-    animation: rotate 2s infinite;
-    mask: url(#masking);
-}
-
-.inner-ring {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    height: 180px;
-    width: 180px;
-    background-image: linear-gradient(0deg, #36295e, #1c1045);
-    border-radius: 50%;
-}
-
 @keyframes rotate {
     0% {transform:rotate(0deg);}
     100% {transform:rotate(360deg);}
@@ -411,4 +378,37 @@ footer a {
     display: none;
     background-color: black;
     opacity: 0.5;
+}
+
+.border-animation {
+    position: relative;
+}
+
+.thin-border, .thick-border {
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    background: linear-gradient(45deg, #fb0094, #0000ff, #00ff00,#ffff00, #ff0000, #fb0094, #0000ff, #00ff00,#ffff00, #ff0000);
+    background-size: 400%;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    z-index: -1;
+    animation: steam 20s linear infinite;
+    border-radius: 10px;
+    transition: opacity 0.5s;
+    opacity: 0;
+}
+
+@keyframes steam {
+    0%, 100% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 400% 0;
+    }
+}
+
+.thick-border {
+    filter: blur(50px);
 }

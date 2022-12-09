@@ -38,15 +38,6 @@ function contrastYiq(color) {
     return yiq >= 128 ? 'black' : 'white';
 };
 
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
 function prepareDragAndDrop(preview) {
     const dropZone = $('body');
     const blackout = $('#blackout');
@@ -88,6 +79,7 @@ $(() => {
     const colorsList = $('.colors-list').first();
     const openBtn = $('#open-btn');
     const fileInput = $('#file-input');
+    const submitBorders = $('.thin-border, .thick-border');
 
     openBtn.click(() => {
         $('#file-input').click();
@@ -107,6 +99,7 @@ $(() => {
         event.preventDefault();
         colorsList.empty();
         if (image) {
+            submitBorders.css('opacity', 1);
             let formData = new FormData();
             formData.append('ColorsCount', this.elements.ColorsCount.value);
             formData.append('FormFile', image);
@@ -118,6 +111,8 @@ $(() => {
             for (let color of result.colorsList) {
                 addColor(colorsList, color);
             };
+            submitBorders.css('opacity', 0);
+            $('.palette').show();
             colorsList[0].scrollIntoView({
                 behavior: "smooth"
             });
