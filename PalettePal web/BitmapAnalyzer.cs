@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CA1416 // Проверка совместимости платформы
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;

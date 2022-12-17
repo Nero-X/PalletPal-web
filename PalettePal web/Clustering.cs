@@ -9,16 +9,12 @@ namespace PalettePal_web
     {
         // KMeans algorithm C# realization by James McCaffrey
         // https://visualstudiomagazine.com/articles/2013/12/01/k-means-data-clustering-using-c.aspx
-        public static int[] KMeans(double[][] rawData, int numClusters)
+        public static int[] KMeans(double[][] data, int numClusters)
         {
             // k-means clustering
             // index of return is tuple ID, cell is cluster ID
             // ex: [2 1 0 0 2 2] means tuple 0 is cluster 2, tuple 1 is cluster 1, tuple 2 is cluster 0, tuple 3 is cluster 0, etc.
             // an alternative clustering DS to save space is to use the .NET BitArray class
-            double[][] data = Normalized(rawData); // so large values don't dominate
-
-            bool changed = true; // was there a change in at least one cluster assignment?
-            bool success = true; // were all means able to be computed? (no zero-count clusters)
 
             // init clustering[] to get things started
             // an alternative is to initialize means to randomly selected tuples
@@ -27,16 +23,23 @@ namespace PalettePal_web
             //    update clustering
             //    update means
             // end loop
-            int[] clustering = InitClustering(data.Length, numClusters, 0); // semi-random initialization
-            double[][] means = Allocate(numClusters, data[0].Length); // small convenience
-
-            int maxCount = data.Length * 10; // sanity check
-            int ct = 0;
-            while (changed == true && success == true && ct < maxCount)
+            int[] clustering = Array.Empty<int>();
+            for (int seed = 0, ct = 0; ct < 2; seed++)
             {
-                ++ct; // k-means typically converges very quickly
-                success = UpdateMeans(data, clustering, means); // compute new cluster means if possible. no effect if fail
-                changed = UpdateClustering(data, clustering, means); // (re)assign tuples to clusters. no effect if fail
+                clustering = InitClustering(data.Length, numClusters, seed); // semi-random initialization
+                double[][] means = Allocate(numClusters, data[0].Length); // small convenience
+
+                int maxCount = data.Length * 10; // sanity check
+
+                ct = 0;
+                bool changed = true; // was there a change in at least one cluster assignment?
+                bool success = true; // were all means able to be computed? (no zero-count clusters)
+                while (changed == true && success == true && ct < maxCount)
+                {
+                    ++ct; // k-means typically converges very quickly
+                    success = UpdateMeans(data, clustering, means); // compute new cluster means if possible. no effect if fail
+                    changed = UpdateClustering(data, clustering, means); // (re)assign tuples to clusters. no effect if fail
+                }
             }
             // consider adding means[][] as an out parameter - the final means could be computed
             // the final means are useful in some scenarios (e.g., discretization and RBF centroids)
@@ -47,36 +50,6 @@ namespace PalettePal_web
             // such as the average distance between cluster means, or the average distance between tuples in 
             // a cluster, or a weighted combination of both
             return clustering;
-        }
-
-        private static double[][] Normalized(double[][] rawData)
-        {
-            // normalize raw data by computing (x - mean) / stddev
-            // primary alternative is min-max:
-            // v' = (v - min) / (max - min)
-
-            // make a copy of input data
-            double[][] result = new double[rawData.Length][];
-            for (int i = 0; i < rawData.Length; ++i)
-            {
-                result[i] = new double[rawData[i].Length];
-                Array.Copy(rawData[i], result[i], rawData[i].Length);
-            }
-
-            for (int j = 0; j < result[0].Length; ++j) // each col
-            {
-                double colSum = 0.0;
-                for (int i = 0; i < result.Length; ++i)
-                    colSum += result[i][j];
-                double mean = colSum / result.Length;
-                double sum = 0.0;
-                for (int i = 0; i < result.Length; ++i)
-                    sum += (result[i][j] - mean) * (result[i][j] - mean);
-                double sd = sum / result.Length;
-                for (int i = 0; i < result.Length; ++i)
-                    result[i][j] = (result[i][j] - mean) / sd;
-            }
-            return result;
         }
 
         private static int[] InitClustering(int numTuples, int numClusters, int randomSeed)

@@ -75,6 +75,7 @@ function setImage(preview, file) {
 }
 
 $(() => {
+    let isWaiting = false;
     const preview = $('#form-image');
     const colorsList = $('.colors-list').first();
     const openBtn = $('#open-btn');
@@ -98,31 +99,35 @@ $(() => {
     $('form').submit(async function (event) {
         event.preventDefault();
         colorsList.empty();
-        if (image) {
-            submitBorders.css('opacity', 1);
-            let formData = new FormData();
-            formData.append('ColorsCount', this.elements.ColorsCount.value);
-            formData.append('FormFile', image);
-            let response = await fetch(this.action, {
-                method: 'ajax',
-                body: formData
-            });
-            let result = await response.json();
-            for (let color of result.colorsList) {
-                addColor(colorsList, color);
-            };
-            submitBorders.css('opacity', 0);
-            $('.palette').show();
-            colorsList[0].scrollIntoView({
-                behavior: "smooth"
-            });
-        }
-        else {
+
+        if (!image) {
             openBtn.addClass('shake-horizontal');
             setTimeout(() => {
                 openBtn.removeClass('shake-horizontal');
             }, 600);
+            return;
         }
+        if (isWaiting) return;
+
+        isWaiting = true;
+        submitBorders.css('opacity', 1);
+        let formData = new FormData();
+        formData.append('ColorsCount', this.elements.ColorsCount.value);
+        formData.append('FormFile', image);
+        let response = await fetch(this.action, {
+            method: 'ajax',
+            body: formData
+        });
+        let result = await response.json();
+        for (let color of result.colorsList) {
+            addColor(colorsList, color);
+        };
+        submitBorders.css('opacity', 0);
+        $('.palette').show();
+        colorsList[0].scrollIntoView({
+            behavior: "smooth"
+        });
+        isWaiting = false;
     });
 
     for (var i = 1; i < 9; i++) {
